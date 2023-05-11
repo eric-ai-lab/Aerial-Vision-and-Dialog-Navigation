@@ -160,7 +160,7 @@ class CustomBERTModel(nn.Module):
 
 
 
-class ViT_LSTM_continous_sali_6_waypoint_resnet(nn.Module):
+class ViT_LSTM(nn.Module):
     def __init__(self, args, vit_model, hidden_size=768, 
                       dropout_ratio = 0.5, im_channel_size=512, im_feature_size = 49, embedding_size = 32):
         super().__init__()
@@ -252,7 +252,7 @@ class ViT_LSTM_continous_sali_6_waypoint_resnet(nn.Module):
 
 
 
-class ViT_LSTM_continous_sali_6_waypoint_resnet_vision_only(nn.Module):
+class ViT_LSTM_vision_only(nn.Module):
     def __init__(self, args, vit_model, hidden_size=768, 
                       dropout_ratio = 0.5, im_channel_size=512, im_feature_size = 49, embedding_size = 32):
         super().__init__()
@@ -346,7 +346,7 @@ class ViT_LSTM_continous_sali_6_waypoint_resnet_vision_only(nn.Module):
 
 
 
-class ViT_LSTM_continous_sali_6_waypoint_resnet_lang_only(nn.Module):
+class ViT_LSTM_lang_only(nn.Module):
     def __init__(self, args, vit_model, hidden_size=768, 
                       dropout_ratio = 0.5, im_channel_size=512, im_feature_size = 49, embedding_size = 32):
         super().__init__()

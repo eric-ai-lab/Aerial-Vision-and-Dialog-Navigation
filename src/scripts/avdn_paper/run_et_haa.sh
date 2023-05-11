@@ -1,10 +1,8 @@
 ngpus=1
 seed=0
 
-outdir=../datasets/XVIEW/et_v8_student_haa
 flag="--root_dir ../datasets
-      --output_dir ${outdir}
-      
+
       --world_size ${ngpus}
       --seed ${seed}
       
@@ -36,11 +34,9 @@ flag="--root_dir ../datasets
 
 
 # train
-CUDA_VISIBLE_DEVICES='5'  python xview_et/main.py $flag \
-      # -train_val_on_full \
-      # --resume_file ../datasets/XVIEW/et_v3_no_haa_flat/ckpts/best_val_unseen
+# CUDA_VISIBLE_DEVICES='5'  python xview_et/main.py --output_dir ../datasets/XVIEW/et_v8 $flag 
 
-      # -num_replacement\
-      # --resume_file ../datasets/XVIEW/next61_no_sali/ckpts/best_val_unseen
-      # 
-
+# eval
+CUDA_VISIBLE_DEVICES='5'  python xview_et/main.py --output_dir ../datasets/XVIEW/et_output $flag \
+      --resume_file ../datasets/XVIEW/et_haa/ckpts/best_val_unseen\
+      --test True

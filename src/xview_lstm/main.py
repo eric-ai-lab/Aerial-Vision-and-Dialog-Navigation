@@ -16,9 +16,9 @@ from utils.distributed import all_gather, merge_dist_results
 
 
 
-from xview_sali_6_waypoint_resnet.agent import NavCMTAgent
+from xview_lstm.agent import NavCMTAgent
 from env import ANDHNavBatch
-from xview_sali_6_waypoint_resnet.parser import parse_args
+from xview_lstm.parser import parse_args
 
 def get_tokenizer(args):
     from transformers import AutoTokenizer
@@ -38,7 +38,6 @@ def build_dataset(args, rank=0, is_test=False):
         batch_size=args.batch_size, 
         seed=args.seed+rank,
         full_traj = False,
-        num_replacement = args.num_replacement
     )
     train_full_traj_env = None
     
@@ -58,24 +57,11 @@ def build_dataset(args, rank=0, is_test=False):
             batch_size=args.batch_size, 
             seed=args.seed+rank,
             full_traj = False,
-            num_replacement = args.num_replacement
         )
 
         val_envs[split] = val_env
 
-    val_full_traj_envs = {}
-    for split in val_env_names:
-
-
-        val_full_traj_env = dataset_class(
-            args.val_anno_dir, args.val_dataset_dir, [split], tokenizer=tok, max_instr_len=args.max_instr_len,
-            batch_size=1, 
-            seed=args.seed+rank,
-            full_traj = True,
-            num_replacement = args.num_replacement
-        )
-
-        val_full_traj_envs[split] = val_full_traj_env
+    val_full_traj_envs = None
 
     return train_env, train_full_traj_env, val_envs, val_full_traj_envs
 

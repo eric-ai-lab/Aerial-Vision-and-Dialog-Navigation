@@ -38,9 +38,8 @@ def build_dataset(args, rank=0, is_test=False):
         batch_size=args.batch_size, 
         seed=args.seed+rank,
         full_traj = False,
-        num_replacement = args.num_replacement,
-        parsed= args.parsed_instruction
     )
+    train_full_traj_env = None
 
     val_env_names = ['val_seen', 'val_unseen',  ] #'test_unseen'
 
@@ -58,26 +57,11 @@ def build_dataset(args, rank=0, is_test=False):
             batch_size=args.batch_size, 
             seed=args.seed+rank,
             full_traj = False,
-            num_replacement = args.num_replacement,
-            parsed= args.parsed_instruction
         )
 
         val_envs[split] = val_env
 
-    val_full_traj_envs = {}
-    for split in val_env_names:
-
-
-        val_full_traj_env = dataset_class(
-            args.val_anno_dir, args.val_dataset_dir, [split], tokenizer=tok, max_instr_len=args.max_instr_len,
-            batch_size=1, 
-            seed=args.seed+rank,
-            full_traj = True,
-            num_replacement = args.num_replacement,
-            parsed= args.parsed_instruction
-        )
-
-        val_full_traj_envs[split] = val_full_traj_env
+    val_full_traj_envs = None
 
     return train_env, train_full_traj_env, val_envs, val_full_traj_envs
 

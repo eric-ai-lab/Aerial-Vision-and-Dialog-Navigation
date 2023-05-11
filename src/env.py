@@ -64,126 +64,7 @@ def get_direction(start,end):
             _angle = 270
     _angle = (360 - _angle+90)%360
     return _angle
-def hight_light_instructions(item_insr):
-    words = item_insr.split(' ')
-    highlighted_words = ''
-    flag = 0
-    for i in range(len(words)):
-        
-        words[i] = words[i].lower()
-        if 'cloc' in words[i]:
-            
-            highlighted_words += ' '.join(words[flag:i-2])
-            flag = i
-            highlighted_words += ' '.join(words[i-2:i])\
-            .replace(
-                '10', ' left with a little forward ' 
-            )\
-            .replace(
-                '11', ' forward with a little left '
-            )\
-            .replace(
-                '12', ' foward '
-            )\
-            .replace(
-                '1', ' forward with a little right '
-            )\
-            .replace(
-                '2', ' right with a little forward ' 
-            )\
-            .replace(
-                '3', ' right '
-            )\
-            .replace(
-                '4', ' right with a little backward '
-            )\
-            .replace(
-                '5', ' backward with a little right '
-            )\
-            .replace(
-                '6', ' backward '
-            )\
-            .replace(
-                '7', ' backward with a little left '
-            )\
-            .replace(
-                '8', ' left with a little backward '
-            )\
-            .replace(
-                '9', ' left '
-            )\
-            .replace(
-                'one', ' forward with a little right '
-            )\
-            .replace(
-                'two', ' right with a little forward '
-            )\
-            .replace(
-                'three', ' right '
-            )\
-            .replace(
-                'four', ' right with a little backward '
-            )\
-            .replace(
-                'five', ' backward with a little right '
-            )\
-            .replace(
-                'six', ' backward '
-            )\
-            .replace(
-                'seven', ' backward with a little left '
-            )\
-            .replace(
-                'eight', ' left with a little backward '
-            )\
-            .replace(
-                'nine', ' left '
-            )\
-            .replace(
-                'ten', ' left with a little forward '
-            )\
-            .replace(
-                'eleven', ' forward with a little left '
-            )\
-            .replace(
-                'twelve', ' foward '
-            )
-        if 'degre' in words[i]:
-            
-            highlighted_words += ' '.join(words[flag:i-2])
-            flag = i+1
-            highlighted_words += ' '.join(words[i-2:i])\
-            .replace(
-                '180', ' backward '
-            )
-        #     break
-            
-        # if 'north' in words[i]\
-        #     or 'east' in words[i]\
-        #     or 'west' in words[i]\
-        #     or 'south' in words[i]:
-        #     highlighted_words = ' '.join(words[0:i+1])
-        #     break
-    # if highlighted_words != '':
-    #     item_insr =  highlighted_words
-    highlighted_words += ' '.join(words[flag:])
-    item_insr =  highlighted_words\
-            .replace(
-                '\'oclock', ' '
-            )\
-            .replace(
-                'oclock', ' '
-            )\
-            .replace(
-                'o\'clock', ' '
-            )\
-            .replace(
-                'o clock', ' '
-            )\
-            .replace(
-                'clock', ' '
-            )
-    return item_insr
+
 def name_the_direction(_angle):
         if _angle > 337.5 or _angle<22.5:
             return 'north'
@@ -203,7 +84,7 @@ def name_the_direction(_angle):
             return 'west'
 class ANDHNavBatch(torch.utils.data.IterableDataset):
     def __init__(self, anno_dir, dataset_dir, splits, tokenizer=None, max_instr_len=512,
-        batch_size=64, seed=0, full_traj = False, num_replacement = False, parsed = False):
+        batch_size=64, seed=0, full_traj = False):
         self.dataset_dir = dataset_dir
         self.data = []
         for split in splits:
@@ -233,18 +114,8 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
                     if len(item['gt_path_corners']) == 1:
                         item['gt_path_corners'].append(item['gt_path_corners'][0] + np.random.rand(2)*1e-6)
                     
-                    if num_replacement:
-                        item['instructions'] = hight_light_instructions(item['instructions'])
-                        item['pre_dialogs'] = hight_light_instructions(' '.join(item['pre_dialogs']))
-                    elif parsed:
-                        item['instructions'] = item['instructions_parsed'].lower()
-                        for i in range(10):
-                            item['instructions'] = item['instructions'].replace(str(i)+'.', ' , ')
-                        
-                        item['pre_dialogs'] = ' '.join(item['pre_dialogs']).lower()
-                    else:
-                        item['instructions'] = item['instructions'].lower()
-                        item['pre_dialogs'] = ' '.join(item['pre_dialogs']).lower()
+                    item['instructions'] = item['instructions'].lower()
+                    item['pre_dialogs'] = ' '.join(item['pre_dialogs']).lower()
                     self.data.append(item)
 
 

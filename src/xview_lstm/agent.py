@@ -16,7 +16,7 @@ from torchvision import transforms
 from utils.misc import length2mask
 
 # from r2r.agent_cmt import Seq2SeqCMTAgent
-from models.vln_model import CustomBERTModel, ViT_LSTM_continous_sali_6_waypoint_resnet
+from models.vln_model import CustomBERTModel, ViT_LSTM
 from models.dark_net import Darknet
 from transformers import ViTFeatureExtractor
 from transformers import BertTokenizerFast
@@ -137,7 +137,7 @@ class NavCMTAgent:
         
         
         # self.vln_model = CLIP_LSTM(self.args, self.clip_model, 6).cuda()
-        self.vln_model = ViT_LSTM_continous_sali_6_waypoint_resnet(
+        self.vln_model = ViT_LSTM(
             self.args, 
             self.vision_model).cuda()
 

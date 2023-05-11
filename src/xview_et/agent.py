@@ -144,7 +144,7 @@ class NavCMTAgent:
         # create the et model
         self.vln_model = ET(self.args).cuda()
         
-        # self.vln_model = ViT_LSTM_continous_sali_6_waypoint_resnet(
+        # self.vln_model = ViT_LSTM(
         #     self.args, 
         #     self.vision_model).cuda()
         

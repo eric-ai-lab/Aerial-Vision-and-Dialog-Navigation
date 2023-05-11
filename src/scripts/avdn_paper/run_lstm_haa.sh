@@ -1,10 +1,8 @@
 ngpus=1
 seed=0
 
-outdir=../datasets/XVIEW/lstm_v8
 flag="--root_dir ../datasets
-      --output_dir ${outdir}
-      
+
       --world_size ${ngpus}
       --seed ${seed}
       
@@ -36,11 +34,9 @@ flag="--root_dir ../datasets
 
 
 # train
-CUDA_VISIBLE_DEVICES='4' python xview_sali_6_waypoint_resnet/main.py $flag \
-      # -train_val_on_full \
-      # --resume_file ../datasets/XVIEW/next71-full_normal_nss/ckpts/latest_dict
+# CUDA_VISIBLE_DEVICES='4' python xview_lstm/main.py --output_dir ../datasets/XVIEW/lstm_v8 $flag \
 
-      # -num_replacement\
-      # --resume_file ../datasets/XVIEW/next61_no_sali/ckpts/best_val_unseen
-      # --eval_first True\
-
+# eval
+CUDA_VISIBLE_DEVICES='4' python xview_lstm/main.py --output_dir ../datasets/XVIEW/lstm_output $flag \
+--resume_file ../datasets/XVIEW/lstm_haa/ckpts/best_val_unseen \
+--test True
