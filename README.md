@@ -30,11 +30,13 @@ cp -r XVIEW_images/*.tif Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/trai
 ```
 mkdir -p AVDN/datasets/XVIEW/annotations
 
-gdown 1MNzgOH93C4ltymcY-jBe9RMwMKrNNIlD -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/train_data.json
+gdown 1shjHEH1xfB9h5ErcGFED1uIvKGWk88U5 -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/train_data.json
 
-gdown 14prBCIIMcfgnBnmeCz1SV2skDEyshCtr -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_seen_data.json
+gdown 14vAVWpF8fp_L5J_0oUKlk1PwuQjUz3f2 -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_seen_data.json
 
-gdown 1CxNA8iSStvfMgw3hxtjtPvr2mEfbfFir -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_unseen_data.json
+gdown 1-_Si_v8BiI3m8n2GrBrS4EqYUt0Jpbci -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_unseen_data.json
+
+gdown 1W4U4xqQo1_4_5x960FmhAi7b-C2dVyJ- -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/test_unseen_data.json
 ```
 
 **Download pre-trained xview-yolov3 weights and model configuration**
@@ -83,5 +85,3 @@ bash scripts/avdn_paper/run_et_haa.sh
 # For Human Attention Aided LSTM model
 bash scripts/avdn_paper/run_lstm_haa.sh 
 ```
-
-

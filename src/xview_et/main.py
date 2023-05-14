@@ -41,7 +41,7 @@ def build_dataset(args, rank=0, is_test=False):
     )
     train_full_traj_env = None
 
-    val_env_names = ['val_seen', 'val_unseen',  ] #'test_unseen'
+    val_env_names = ['val_seen', 'val_unseen',  ] #'test_unseen' 
 
     if args.submit:
         val_env_names.append('test_unseen')
@@ -318,69 +318,20 @@ def valid(args, val_envs,  val_full_traj_envs, rank=-1):
             agent.test(loader, feedback='student')
             pred_results = agent.get_results()
 
-            score_summary, result = env.eval_metrics(pred_results)
-            loss_str += "Env name: %s" % env_name
-            for metric, val in score_summary.items():
-                loss_str += ', %s: %.2f' % (metric, val)
-            write_to_record_file(loss_str+'\n', record_file)
-            json.dump(
-                result,
-                open(os.path.join(args.pred_dir, "submit_%s.json" % env_name), 'w'),
-                sort_keys=True, indent=4, separators=(',', ': ')
-            )
-    with open(os.path.join(args.log_dir, env_name + '_score_result.json'), 'w') as outf:
-        json.dump(result, outf, sort_keys=True, indent=4, separators=(',', ': '))
+            if env_name == 'test_unseen':
+                np.save('./output_test_result.npy', pred_results)
+            else:
+                score_summary, result = env.eval_metrics(pred_results)
+                loss_str += "Env name: %s" % env_name
+                for metric, val in score_summary.items():
+                    loss_str += ', %s: %.2f' % (metric, val)
+                write_to_record_file(loss_str+'\n', record_file)
+                json.dump(
+                    result,
+                    open(os.path.join(args.pred_dir, "eval_detail_%s.json" % env_name), 'w'),
+                    sort_keys=True, indent=4, separators=(',', ': ')
+                )
 
-        
-
-    # for env_name, env in val_full_traj_envs.items():
-    #     env_name += '_full_traj'
-    #     if os.path.exists(os.path.join(args.pred_dir, "submit_%s.json" % env_name)):
-    #         continue
-    #     agent.logs = defaultdict(list)
-    #     agent.env = env
-
-    #     loader = torch.utils.data.DataLoader(env, batch_size = 1)
-    #     agent.test_full_traj(loader, feedback='student')
-    #     preds = agent.get_results()
-
-
-    #     score_summary, result = env.eval_metrics(preds)
-    #     loss_str = "Env name: %s" % env_name
-    #     for metric, val in score_summary.items():
-    #         loss_str += ', %s: %.2f' % (metric, val)
-    #     write_to_record_file(loss_str+'\n', record_file)
-
-    #     if args.submit:
-    #         json.dump(
-    #             preds,
-    #             open(os.path.join(args.pred_dir, "submit_%s.json" % env_name), 'w'),
-    #             sort_keys=True, indent=4, separators=(',', ': ')
-    #         )
-
-    # evaluate human attention
-    for env_name, env in val_envs.items():
-        env_name += '_human_att'
-        if os.path.exists(os.path.join(args.pred_dir, "submit_%s.json" % env_name)):
-            continue
-        agent.logs = defaultdict(list)
-        agent.env = env
-
-        loader = torch.utils.data.DataLoader(env, batch_size = 1)
-        agent.test(loader, feedback='teacher') # use teacher mode to evaluate human attention pred
-        preds = agent.get_results()
-
-
-        score_summary, result = env.eval_metrics(preds, human_att_eval = True)
-        loss_str = "Env name: %s" % env_name
-        for metric, val in score_summary.items():
-            loss_str += ', %s: %.2f' % (metric, val)
-        write_to_record_file(loss_str+'\n', record_file)
-        # json.dump(
-        #     result,
-        #     open(os.path.join(args.pred_dir, "submit_%s.json" % env_name), 'w'),
-        #     sort_keys=True, indent=4, separators=(',', ': ')
-        # )
 
 def main():
     args = parse_args()

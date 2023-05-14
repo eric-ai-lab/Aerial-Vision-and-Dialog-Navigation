@@ -217,23 +217,7 @@ class NavCMTAgent:
             for traj in self.full_traj_rollout(not_in_train=True, **kwargs): # test traj one-by-one
                 self.loss = 0
                 self.results[traj['instr_id']] = traj
-                
-    # def test_human_att(self, loader, feedback='teacher', **kwargs):
-    #     ''' Evaluate once on each instruction in the current environment '''
-    #     self.feedback = feedback
-
-    #     self.vln_model.eval()
-    #     self.lang_model.eval()
-    #     # self.critic.eval()
-
-    #     self.losses = []
-    #     self.results = {}
-    #     self.loss = 0
-    #     for l in loader:
-    #         for traj in self.att_eval_rollout(not_in_train=True, **kwargs): # loop for #batch times
-    #             self.loss = 0
-    #             self.results[traj['instr_id']] = 
-
+     
     def train(self, loader, n_iters, feedback='student', iter_train = 0, **kwargs):
         ''' Train for a given number of iterations '''
         self.feedback = feedback

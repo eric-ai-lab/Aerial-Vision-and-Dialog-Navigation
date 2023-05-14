@@ -99,18 +99,6 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
                     
                     for i in range(len(item['gt_path_corners'])):
                         item['gt_path_corners'][i] = np.array(item['gt_path_corners'][i]) + np.array([random.random()*1e-7,random.random()*1e-7]) # add noise less than 10cm
-                    if 'last_round_idx' in item.keys() and int(item['route_index'].split('_')[1]) == item['last_round_idx']:
-                    # if 1:
-                        des = np.array(item['destination'])
-                        mean_des = np.mean(des,axis=0)
-                        best_width = max(max(np.linalg.norm(des[0] - des[1]), np.linalg.norm(des[2] - des[1])), 40/11.13/1e4)
-
-                        best_goal_view_area = np.array([[mean_des[0]-best_width/2, mean_des[1]-best_width/2],
-                                                        [mean_des[0]-best_width/2, mean_des[1]+best_width/2],
-                                                        [mean_des[0]+best_width/2, mean_des[1]+best_width/2],
-                                                        [mean_des[0]+best_width/2, mean_des[1]-best_width/2]])
-                        
-                        item['gt_path_corners'].append(best_goal_view_area)
                     if len(item['gt_path_corners']) == 1:
                         item['gt_path_corners'].append(item['gt_path_corners'][0] + np.random.rand(2)*1e-6)
                     
@@ -143,10 +131,7 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
                             if traj_idx == sub_trajs_in_single_map[j]['route_index'].split('_')[0] and\
                                 str(1) == sub_trajs_in_single_map[j]['route_index'].split('_')[1]:
                                 traj_data_json = sub_trajs_in_single_map[j]
-                                if num_replacement:
-                                    traj_data_json['instructions'] = hight_light_instructions(sub_trajs_in_single_map[j]['instructions'])
-                                else:
-                                    traj_data_json['instructions'] = sub_trajs_in_single_map[j]['instructions']
+                                traj_data_json['instructions'] = sub_trajs_in_single_map[j]['instructions']
                                 traj_data_json['angle'] = round(sub_trajs_in_single_map[j]['angle']) % 360
                                 break
                                 
@@ -161,12 +146,8 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
                                     
                                     assert (traj_data_json['lng_ratio'] == sub_trajs_in_single_map[j]['lng_ratio'])
                                     assert len(traj_data_json['attention_list']) <= len(sub_trajs_in_single_map[j]['attention_list'])
-                                    if num_replacement:
-                                        traj_data_json['instructions'] += ' [SEP] ' \
-                                                                     +'facing ' + name_the_direction(sub_trajs_in_single_map[j]['angle']) \
-                                                                     + hight_light_instructions(sub_trajs_in_single_map[j]['instructions'])
-                                    else:
-                                        traj_data_json['instructions'] += ' [SEP] ' \
+                                    
+                                    traj_data_json['instructions'] += ' [SEP] ' \
                                                                      +'facing ' + name_the_direction(sub_trajs_in_single_map[j]['angle']) \
                                                                      + sub_trajs_in_single_map[j]['instructions']
                                     traj_data_json['attention_list'] = sub_trajs_in_single_map[j]['attention_list'] # last sub-traj attention includes all att in previous sub-trajs
