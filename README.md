@@ -43,7 +43,9 @@ gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/d
 
 
 ```
-gdown 1l_etD0Vm3-_hj7WTnfcIuDzgFVeMVQMr -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/pretrain_weights/best.pt
+gdown 1Ke-pA5jpq1-fsEwAch_iRCtJHx6rQc-Z -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/pretrain_weights/best.pt
+
+gdown 1n6RMWcHAbS6DA7BBug6n5dyN6NPjiPjh -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/pretrain_weights/yolo_v3.cfg
 ```
 
 **Download the training checkpoints corresponding to the experiments in the AVDN paper**
