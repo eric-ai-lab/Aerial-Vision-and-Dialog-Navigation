@@ -88,7 +88,7 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
         self.dataset_dir = dataset_dir
         self.data = []
         for split in splits:
-            new_data = json.load(open(os.path.join(anno_dir, '%s_data.json'%split)))
+            new_data = json.load(open(os.path.join(anno_dir, '%s_dataset.json'%split)))
             # # Debug!!!
             # new_data = new_data[:1]
             if full_traj == False:
@@ -98,77 +98,74 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
                     item['angle'] = round(item['angle']) % 360
                     
                     for i in range(len(item['gt_path_corners'])):
-                        item['gt_path_corners'][i] = np.array(item['gt_path_corners'][i]) + np.array([random.random()*1e-7,random.random()*1e-7]) # add noise less than 10cm
-                    if len(item['gt_path_corners']) == 1:
-                        item['gt_path_corners'].append(item['gt_path_corners'][0] + np.random.rand(2)*1e-6)
-                    
+                        item['gt_path_corners'][i] = np.array(item['gt_path_corners'][i]) 
                     item['instructions'] = item['instructions'].lower()
                     item['pre_dialogs'] = ' '.join(item['pre_dialogs']).lower()
                     self.data.append(item)
 
 
-            elif full_traj == True:
-                map_list = set()
-                for i in range(len(new_data)):
-                    map_list.add(new_data[i]['map_name'])
+            # elif full_traj == True:
+            #     map_list = set()
+            #     for i in range(len(new_data)):
+            #         map_list.add(new_data[i]['map_name'])
                 
-                val_map_list = np.array(list(map_list))
+            #     val_map_list = np.array(list(map_list))
 
-                for i in range(len(val_map_list)):
-                    sub_trajs_in_single_map = []
-                    traj_idx_in_one_map = set()
-                    for j in range(len(new_data)):
-                        if new_data[j]['map_name'] == val_map_list[i]:
-                            sub_trajs_in_single_map.append(new_data[j])
-                            traj_idx_in_one_map.add(new_data[j]['route_index'].split('_')[0])
+            #     for i in range(len(val_map_list)):
+            #         sub_trajs_in_single_map = []
+            #         traj_idx_in_one_map = set()
+            #         for j in range(len(new_data)):
+            #             if new_data[j]['map_name'] == val_map_list[i]:
+            #                 sub_trajs_in_single_map.append(new_data[j])
+            #                 traj_idx_in_one_map.add(new_data[j]['route_index'].split('_')[0])
                             
-                    for traj_idx in traj_idx_in_one_map:
+            #         for traj_idx in traj_idx_in_one_map:
                         
-                        traj_data_json = {}
+            #             traj_data_json = {}
 
-                        # get the starting sub_traj
-                        for j in range(len(sub_trajs_in_single_map)):
-                            if traj_idx == sub_trajs_in_single_map[j]['route_index'].split('_')[0] and\
-                                str(1) == sub_trajs_in_single_map[j]['route_index'].split('_')[1]:
-                                traj_data_json = sub_trajs_in_single_map[j]
-                                traj_data_json['instructions'] = sub_trajs_in_single_map[j]['instructions']
-                                traj_data_json['angle'] = round(sub_trajs_in_single_map[j]['angle']) % 360
-                                break
+            #             # get the starting sub_traj
+            #             for j in range(len(sub_trajs_in_single_map)):
+            #                 if traj_idx == sub_trajs_in_single_map[j]['route_index'].split('_')[0] and\
+            #                     str(1) == sub_trajs_in_single_map[j]['route_index'].split('_')[1]:
+            #                     traj_data_json = sub_trajs_in_single_map[j]
+            #                     traj_data_json['instructions'] = sub_trajs_in_single_map[j]['instructions']
+            #                     traj_data_json['angle'] = round(sub_trajs_in_single_map[j]['angle']) % 360
+            #                     break
                                 
-                        k = 1
-                        while 1:
-                            k += 1
-                            if traj_data_json['last_round_idx']<k:
-                                break
-                            for j in range(len(sub_trajs_in_single_map)):
-                                if traj_idx == sub_trajs_in_single_map[j]['route_index'].split('_')[0] and\
-                                    str(k) == sub_trajs_in_single_map[j]['route_index'].split('_')[1]:
+            #             k = 1
+            #             while 1:
+            #                 k += 1
+            #                 if traj_data_json['last_round_idx']<k:
+            #                     break
+            #                 for j in range(len(sub_trajs_in_single_map)):
+            #                     if traj_idx == sub_trajs_in_single_map[j]['route_index'].split('_')[0] and\
+            #                         str(k) == sub_trajs_in_single_map[j]['route_index'].split('_')[1]:
                                     
-                                    assert (traj_data_json['lng_ratio'] == sub_trajs_in_single_map[j]['lng_ratio'])
-                                    assert len(traj_data_json['attention_list']) <= len(sub_trajs_in_single_map[j]['attention_list'])
+            #                         assert (traj_data_json['lng_ratio'] == sub_trajs_in_single_map[j]['lng_ratio'])
+            #                         assert len(traj_data_json['attention_list']) <= len(sub_trajs_in_single_map[j]['attention_list'])
                                     
-                                    traj_data_json['instructions'] += ' [SEP] ' \
-                                                                     +'facing ' + name_the_direction(sub_trajs_in_single_map[j]['angle']) \
-                                                                     + sub_trajs_in_single_map[j]['instructions']
-                                    traj_data_json['attention_list'] = sub_trajs_in_single_map[j]['attention_list'] # last sub-traj attention includes all att in previous sub-trajs
-                                    traj_data_json['gt_path_corners'] += sub_trajs_in_single_map[j]['gt_path_corners']
+            #                         traj_data_json['instructions'] += ' [SEP] ' \
+            #                                                          +'facing ' + name_the_direction(sub_trajs_in_single_map[j]['angle']) \
+            #                                                          + sub_trajs_in_single_map[j]['instructions']
+            #                         traj_data_json['attention_list'] = sub_trajs_in_single_map[j]['attention_list'] # last sub-traj attention includes all att in previous sub-trajs
+            #                         traj_data_json['gt_path_corners'] += sub_trajs_in_single_map[j]['gt_path_corners']
                                     
-                                    break
-                        for i in range(len(traj_data_json['gt_path_corners'])):
-                            traj_data_json['gt_path_corners'][i] = np.array(traj_data_json['gt_path_corners'][i]) + np.array([random.random()*1e-7,random.random()*1e-7]) # add noise less than 10cm
+            #                         break
+            #             for i in range(len(traj_data_json['gt_path_corners'])):
+            #                 traj_data_json['gt_path_corners'][i] = np.array(traj_data_json['gt_path_corners'][i]) + np.array([random.random()*1e-7,random.random()*1e-7]) # add noise less than 10cm
                         
-                        des = np.array(traj_data_json['destination'])
-                        mean_des = np.mean(des,axis=0)
-                        best_width = max(max(np.linalg.norm(des[0] - des[1]), np.linalg.norm(des[2] - des[1])), 40/11.13/1e4)
+            #             des = np.array(traj_data_json['destination'])
+            #             mean_des = np.mean(des,axis=0)
+            #             best_width = max(max(np.linalg.norm(des[0] - des[1]), np.linalg.norm(des[2] - des[1])), 40/11.13/1e4)
 
-                        best_goal_view_area = np.array([[mean_des[0]-best_width/2, mean_des[1]-best_width/2],
-                                                        [mean_des[0]-best_width/2, mean_des[1]+best_width/2],
-                                                        [mean_des[0]+best_width/2, mean_des[1]+best_width/2],
-                                                        [mean_des[0]+best_width/2, mean_des[1]-best_width/2]])
+            #             best_goal_view_area = np.array([[mean_des[0]-best_width/2, mean_des[1]-best_width/2],
+            #                                             [mean_des[0]-best_width/2, mean_des[1]+best_width/2],
+            #                                             [mean_des[0]+best_width/2, mean_des[1]+best_width/2],
+            #                                             [mean_des[0]+best_width/2, mean_des[1]-best_width/2]])
                         
-                        traj_data_json['gt_path_corners'].append(best_goal_view_area)
+            #             traj_data_json['gt_path_corners'].append(best_goal_view_area)
 
-                        self.data.append(traj_data_json)
+            #             self.data.append(traj_data_json)
 
             print('%s loaded with %d instructions, using splits: %s' % (
                 self.__class__.__name__, len(new_data), split))

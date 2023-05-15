@@ -22,3 +22,4 @@ src/utils/__pycache__/*
 src/models/__pycache__/*
 src/xview_et/__pycache__/*
 src/xview_sali_6_waypoint_resnet/__pycache__/*
+src/*.npy

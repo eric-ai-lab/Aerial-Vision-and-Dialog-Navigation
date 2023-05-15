@@ -30,13 +30,13 @@ cp -r XVIEW_images/*.tif Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/trai
 ```
 mkdir -p AVDN/datasets/XVIEW/annotations
 
-gdown 1shjHEH1xfB9h5ErcGFED1uIvKGWk88U5 -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/train_data.json
+gdown 1bdX5E1uEQXg8T8b5T7sh6WXb4V5rcG_Q -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/train_data.json
 
-gdown 14vAVWpF8fp_L5J_0oUKlk1PwuQjUz3f2 -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_seen_data.json
+gdown 1y0PAW3bN1KtWPx9SkKuJU7o0c0tJsnzY -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_seen_data.json
 
-gdown 1-_Si_v8BiI3m8n2GrBrS4EqYUt0Jpbci -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_unseen_data.json
+gdown 1MYVAPeeS7Ydw4P7j1glvmYoE5yrN8Eo8 -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_unseen_data.json
 
-gdown 1W4U4xqQo1_4_5x960FmhAi7b-C2dVyJ- -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/test_unseen_data.json
+gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/test_unseen_data.json
 ```
 
 **Download pre-trained xview-yolov3 weights and model configuration**
