@@ -44,7 +44,7 @@ gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/d
 ```
 # Explore AVDN dataset
 <img align="right" height="226" src="readme_imgs/explore_avdn.png" />
-We provide a script for visualizing the trajectories and corresponding dialgues. To run the script, plase download the xView data and AVDN dataset and provide to the script with the paths to the folder containing xView images and to AVDN dataset (either train, val_seen or val_unseen).
+We provide a script for visualizing the trajectories and corresponding dialgues (as shown on the right). The script uses OpenCV. To run the script, plase download the xView data and AVDN dataset and provide to the script with the paths to the folder containing xView images and to AVDN dataset (either train, val_seen or val_unseen).
 
 ```
 python Aerial-Vision-and-Dialog-Navigation/src/visualize_sub_traj_new.py \
