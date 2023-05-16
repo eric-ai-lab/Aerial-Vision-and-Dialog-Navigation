@@ -1,5 +1,8 @@
-# AVDN
-Aerial Vision-and-Dialog Navigation
+# Aerial Vision-and-Dialog Navigation
+
+The ability to converse with humans and follow natural language commands is crucial for intelligent unmanned aerial vehicles (a.k.a. drones). It can relieve people's burden of holding a controller all the time, allow multitasking, and make drone control more accessible for people with disabilities or with their hands occupied. To this end, we introduce Aerial Vision-and-Dialog Navigation (AVDN), to navigate a drone via natural language conversation. We build a drone simulator with a continuous photorealistic environment and collect a new AVDN dataset of over 3k recorded navigation trajectories with asynchronous human-human dialogs between commanders and followers. The commander provides initial navigation instruction and further guidance by request, while the follower navigates the drone in the simulator and asks questions when needed. During data collection, followers' attention on the drone's visual observation is also recorded. Based on the AVDN dataset, we study the tasks of aerial navigation from (full) dialog history and propose an effective Human Attention Aided Transformer model (HAA-Transformer), which learns to predict both navigation waypoints and human attention. 
+
+![](./readme_imgs/image.png)
 
 Todos:
 - [x] Data released
@@ -37,6 +40,15 @@ gdown 1y0PAW3bN1KtWPx9SkKuJU7o0c0tJsnzY -O Aerial-Vision-and-Dialog-Navigation/d
 gdown 1MYVAPeeS7Ydw4P7j1glvmYoE5yrN8Eo8 -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_unseen_data.json
 
 gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/test_unseen_data.json
+```
+# Explore AVDN dataset
+<img align="right" src="readme_imgs/explore_avdn.png" />
+We provide a script for visualizing the trajectories and corresponding dialgues. To run the script, plase download the xView data and AVDN dataset and provide to the script with the paths to the folder containing xView images and to AVDN dataset (either train, val_seen or val_unseen).
+
+```
+python Aerial-Vision-and-Dialog-Navigation/src/visualize_sub_traj_new.py \
+--xview_image_path {PATH_TO_XVIEW_IMG_FOLDER} \
+--avdn_annotation_path {PATH_TO_AVDN_DATASET}/val_seen_data.json
 ```
 
 # Training and Evaluation
