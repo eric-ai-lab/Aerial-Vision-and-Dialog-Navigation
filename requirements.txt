@@ -7,9 +7,8 @@ easydict==1.9
 lmdb==1.2.1
 numpy==1.21.4
 Pillow==8.4.0
-tensorboardX==2.9.1
 transformers==4.19.4
-torchvision==0.12.0+cu113
-torch==1.11.0+cu113
+tensorboardX==2.5.1
 Shapely==1.8.2
 gdown==4.7.1
+opencv-python==4.6.0.66

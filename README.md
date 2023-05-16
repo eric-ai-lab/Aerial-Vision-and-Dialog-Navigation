@@ -9,7 +9,7 @@ Todos:
 
 git pull https://github.com/UeFan/AVDN.git
 
-# Download Data and Pre-trained Weights
+# Download Data
 
 **Download xView data** 
 
@@ -28,7 +28,7 @@ cp -r XVIEW_images/*.tif Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/trai
  (https://sites.google.com/view/aerial-vision-and-dialog/home):
 
 ```
-mkdir -p AVDN/datasets/XVIEW/annotations
+mkdir -p Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations
 
 gdown 1bdX5E1uEQXg8T8b5T7sh6WXb4V5rcG_Q -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/train_data.json
 
@@ -39,13 +39,12 @@ gdown 1MYVAPeeS7Ydw4P7j1glvmYoE5yrN8Eo8 -O Aerial-Vision-and-Dialog-Navigation/d
 gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/test_unseen_data.json
 ```
 
-**Download pre-trained xview-yolov3 weights and model configuration**
-
+# Training and Evaluation
+**Download pre-trained xview-yolov3 weights**
 
 ```
 gdown 1Ke-pA5jpq1-fsEwAch_iRCtJHx6rQc-Z -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/pretrain_weights/best.pt
 
-gdown 1n6RMWcHAbS6DA7BBug6n5dyN6NPjiPjh -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/pretrain_weights/yolo_v3.cfg
 ```
 
 **Download the training checkpoints corresponding to the experiments in the AVDN paper**
@@ -61,10 +60,14 @@ gdown 1fA6ckLVA-gsiOmWmOMkqJggTLbiJpFBI -O Aerial-Vision-and-Dialog-Navigation/d
 gdown 1RYjo_vc5m5ZRUcjIFojZjke8RhlfX90I -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/lstm_haa/ckpts/best_val_unseen
 ```
 
-# Training and Evaluation
+
 **Install requirements**
 
 ```
+pip install torch==1.11.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
+
+pip install torchvision==0.12.0+cu113 -f -f https://download.pytorch.org/whl/torch_stable.html
+
 pip install -r requirements.txt
 ```
 
