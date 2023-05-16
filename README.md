@@ -11,7 +11,6 @@ Todos:
 - [x] Inference code uploaded and checkpoint released
 - [ ] Eval.ai challenge setup
 
-git pull https://github.com/UeFan/AVDN.git
 
 # Download Data
 
