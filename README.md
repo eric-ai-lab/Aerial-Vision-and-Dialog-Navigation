@@ -42,7 +42,7 @@ gdown 1MYVAPeeS7Ydw4P7j1glvmYoE5yrN8Eo8 -O Aerial-Vision-and-Dialog-Navigation/d
 gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/test_unseen_data.json
 ```
 # Explore AVDN dataset
-<img align="right" src="readme_imgs/explore_avdn.png" />
+<img align="right" height="260" src="readme_imgs/explore_avdn.png" />
 We provide a script for visualizing the trajectories and corresponding dialgues. To run the script, plase download the xView data and AVDN dataset and provide to the script with the paths to the folder containing xView images and to AVDN dataset (either train, val_seen or val_unseen).
 
 ```
