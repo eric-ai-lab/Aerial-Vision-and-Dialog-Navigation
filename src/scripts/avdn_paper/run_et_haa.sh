@@ -39,4 +39,5 @@ flag="--root_dir ../datasets
 # eval
 CUDA_VISIBLE_DEVICES='5'  python xview_et/main.py --output_dir ../datasets/XVIEW/et_output $flag \
       --resume_file ../datasets/XVIEW/et_haa/ckpts/best_val_unseen\
-      --test True
+      --inference True
+      --submit True

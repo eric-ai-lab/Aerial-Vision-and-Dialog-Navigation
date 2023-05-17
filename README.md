@@ -9,8 +9,8 @@ Todos:
 - [x] Data released
 - [x] Train code uploaded
 - [x] Inference code uploaded and checkpoint released
-- [ ] Eval.ai challenge setup
-
+- [x] Eval.ai challenge setup
+- [ ] Dataset format explanation in detail
 
 # Download Data
 
@@ -102,3 +102,6 @@ bash scripts/avdn_paper/run_et_haa.sh
 # For Human Attention Aided LSTM model
 bash scripts/avdn_paper/run_lstm_haa.sh 
 ```
+
+# Leaderboard
+Bsed on AVDN dataset, we host a challenge based on Aerial Navigation from Dialog History (ANDH) task on Eval.ai: https://eval.ai/web/challenges/challenge-page/2049/overview

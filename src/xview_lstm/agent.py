@@ -203,23 +203,9 @@ class NavCMTAgent:
                 self.loss = 0
                 self.results[traj['instr_id']] = traj
                 
-    def test_full_traj(self, loader, feedback='student', **kwargs):
-        ''' Evaluate once on each instruction in the current environment '''
-        self.feedback = feedback
-        self.vln_model.eval()
-        self.lang_model.eval()
-        # self.critic.eval()
 
-        self.losses = []
-        self.results = {}
-        self.loss = 0
-        for l in loader:
-            for traj in self.full_traj_rollout(not_in_train=True, **kwargs): # test traj one-by-one
-                self.loss = 0
-                self.results[traj['instr_id']] = traj
-     
-    def train(self, loader, n_iters, feedback='student', iter_train = 0, **kwargs):
-        ''' Train for a given number of iterations '''
+    def train(self, loader, n_epochs, feedback='student', iter_train = 0, **kwargs):
+        ''' Train for a given number of epochs '''
         self.feedback = feedback
 
         self.lang_model.train()
@@ -227,7 +213,7 @@ class NavCMTAgent:
         # self.critic.train()
 
         self.losses = []
-        for iter in range(1, n_iters + 1):
+        for epoch in range(1, n_epochs + 1):
             
             for l in tqdm(loader):
                 self.lang_model_optimizer.zero_grad()
@@ -247,7 +233,6 @@ class NavCMTAgent:
                 else:
                     assert False
 
-                #print(self.rank, iter, self.loss)
                 self.loss.backward()
 
                 torch.nn.utils.clip_grad_norm_(self.vln_model.parameters(), 40.)
@@ -255,7 +240,7 @@ class NavCMTAgent:
                 self.lang_model_optimizer.step()
                 self.vln_model_optimizer.step()
 
-            print_progress(iter, n_iters+1, prefix='Progress:', suffix='Complete', bar_length=50)
+            print_progress(epoch, n_epochs+1, prefix='Progress:', suffix='Complete', bar_length=50)
 
     def NSS(self, sal,fix):
         m = torch.mean(sal.view(-1,224*224),1).view(-1,1,1)
@@ -638,65 +623,67 @@ class NavCMTAgent:
             for i in range(len(pred_progress_t)):
                 pred_progress_t[i] = min(1., max(0., pred_progress_t[i]))
 
-      
-            # Get ground truth
-            target, gt_progress = self.teacher_action(obs, ended, current_view_corners, current_directions) # Retrun gt action for every batch that have not reached the end
-            # print(t, target, gt_progress)
-            
-            # Compute loss
-            for i in range(len(obs)):
-                # if the function teacher_action determins that the current view is the final position, no action should be made
-                if type(target[i][0]) != type(-100):
-                    cuda_gt_next_pos_ratio = torch.from_numpy(target[i][0]).cuda()
-                    ml_loss += self.progress_regression(pred_next_pos_ratio[i,:], cuda_gt_next_pos_ratio)
-                    ml_loss += self.progress_regression((torch.atan2(pred_next_pos_ratio[i,0], pred_next_pos_ratio[i,1])  /3.14159 + 2) / 2  %1 ,
-                                                        (torch.atan2(cuda_gt_next_pos_ratio[0], cuda_gt_next_pos_ratio[1])  /3.14159 + 2) / 2  %1)
-                    ml_loss += self.progress_regression(pred_altitude[i], torch.tensor([target[i][1]]).cuda())
-                    ml_loss += self.progress_regression(pred_progress[i], torch.tensor([gt_progress[i,0]]).cuda())
-
-            # Human attention prediction and NSS loss
-            for i in range(len(obs)):
-                pred_saliency_cpu = pred_saliency[i].clip(0,1).cpu().detach().numpy().reshape(224,224,1)
-                gt_saliency = obs[i]['gt_saliency'].reshape(224,224,1)
-                if np.sum(obs[i]['gt_saliency']) > 0:
-                    nss_loss= self.NSS(pred_saliency[i], torch.from_numpy(obs[i]['gt_saliency']).cuda())
-                    if nss_loss != nss_loss: # debug for nan loss
-                        print('1', nss_loss)
-                    else:
-                        ml_loss += nss_w*nss_loss
-                    # in human att evaluation
-                    if not_in_train == True and self.feedback == 'teacher':
-                        tp = np.sum(pred_saliency_cpu*gt_saliency, dtype=np.float32)
-                        if np.sum(pred_saliency_cpu, dtype=np.float32) != 0:
-                            precision = tp/np.sum(pred_saliency_cpu, dtype=np.float32)
-                        else:
-                            precision = 0.
-                        recall = tp/np.sum(gt_saliency, dtype=np.float32)
-                        traj[i]['human_att_performance'].append([precision, recall])
-                        traj[i]['nss'].append(nss_loss.item())
-                '''
+            # there is no ground truth in unseen_test set
+            if not 'test' in self.env_name:
+                # Get ground truth
+                target, gt_progress = self.teacher_action(obs, ended, current_view_corners, current_directions) # Retrun gt action for every batch that have not reached the end
+                # print(t, target, gt_progress)
                 
-                if not_in_train == True and self.feedback == 'teacher':    
-                    cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'val' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_pred_att_' + str(t) +'.jpg',
-                            obs[i]['current_view'] * np.repeat(pred_saliency_cpu, 3, axis = 2))
-                    cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'val' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_gt_att_' + str(t) +'.jpg',
-                            obs[i]['current_view'] * np.repeat(gt_saliency, 3, axis = 2))
-                    cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'val' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_input_' + str(t) +'.jpg',
-                            obs[i]['current_view'])
-                '''
-                # else:
-                #     cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'train' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_pred_att_' + str(t) +'.jpg',
-                #             obs[i]['current_view'] * np.repeat(pred_saliency.cpu().detach().numpy().reshape(224,224,1), 3, axis = 2))
-                #     cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'train' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_gt_att_' + str(t) +'.jpg',
-                #             obs[i]['current_view'] * np.repeat(obs[i]['gt_saliency'].reshape(224,224,1), 3, axis = 2))
+                # Compute loss
+                for i in range(len(obs)):
+                    # if the function teacher_action determins that the current view is the final position, no action should be made
+                    if type(target[i][0]) != type(-100):
+                        cuda_gt_next_pos_ratio = torch.from_numpy(target[i][0]).cuda()
+                        ml_loss += self.progress_regression(pred_next_pos_ratio[i,:], cuda_gt_next_pos_ratio)
+                        ml_loss += self.progress_regression((torch.atan2(pred_next_pos_ratio[i,0], pred_next_pos_ratio[i,1])  /3.14159 + 2) / 2  %1 ,
+                                                            (torch.atan2(cuda_gt_next_pos_ratio[0], cuda_gt_next_pos_ratio[1])  /3.14159 + 2) / 2  %1)
+                        ml_loss += self.progress_regression(pred_altitude[i], torch.tensor([target[i][1]]).cuda())
+                        ml_loss += self.progress_regression(pred_progress[i], torch.tensor([gt_progress[i,0]]).cuda())
+
+                # Human attention prediction and NSS loss
+                for i in range(len(obs)):
+                    pred_saliency_cpu = pred_saliency[i].clip(0,1).cpu().detach().numpy().reshape(224,224,1)
+                    gt_saliency = obs[i]['gt_saliency'].reshape(224,224,1)
+                    if np.sum(obs[i]['gt_saliency']) > 0:
+                        nss_loss= self.NSS(pred_saliency[i], torch.from_numpy(obs[i]['gt_saliency']).cuda())
+                        if nss_loss != nss_loss: # debug for nan loss
+                            print('1', nss_loss)
+                        else:
+                            ml_loss += nss_w*nss_loss
+                        # in human att evaluation
+                        if not_in_train == True and self.feedback == 'teacher':
+                            tp = np.sum(pred_saliency_cpu*gt_saliency, dtype=np.float32)
+                            if np.sum(pred_saliency_cpu, dtype=np.float32) != 0:
+                                precision = tp/np.sum(pred_saliency_cpu, dtype=np.float32)
+                            else:
+                                precision = 0.
+                            recall = tp/np.sum(gt_saliency, dtype=np.float32)
+                            traj[i]['human_att_performance'].append([precision, recall])
+                            traj[i]['nss'].append(nss_loss.item())
+                    '''
+                    
+                    if self.args.inference and self.feedback == 'teacher':    
+                        cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'val' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_pred_att_' + str(t) +'.jpg',
+                                obs[i]['current_view'] * np.repeat(pred_saliency_cpu, 3, axis = 2))
+                        cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'val' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_gt_att_' + str(t) +'.jpg',
+                                obs[i]['current_view'] * np.repeat(gt_saliency, 3, axis = 2))
+                        cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'val' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_input_' + str(t) +'.jpg',
+                                obs[i]['current_view'])
+                    '''
+                    # else:
+                    #     cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'train' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_pred_att_' + str(t) +'.jpg',
+                    #             obs[i]['current_view'] * np.repeat(pred_saliency.cpu().detach().numpy().reshape(224,224,1), 3, axis = 2))
+                    #     cv2.imwrite(self.args.pred_dir + '/debug_images/' + self.env_name + 'train' + obs[i]['map_name'] + '_'+ obs[i]['route_index']+ '_gt_att_' + str(t) +'.jpg',
+                    #             obs[i]['current_view'] * np.repeat(obs[i]['gt_saliency'].reshape(224,224,1), 3, axis = 2))
             
 
             # Log the trajectory
             for i,ob in enumerate(obs):
                 if not ended[i]:
                     traj[i]['actions'].append([a_t_next_pos_ratio[i], a_t_altitude[i]])
-                    traj[i]['gt_actions'].append(target[i])
-                    traj[i]['gt_progress'].append(gt_progress[i].item())
+                    if not 'test' in self.env_name:
+                        traj[i]['gt_actions'].append(target[i])
+                        traj[i]['gt_progress'].append(gt_progress[i].item())
                     traj[i]['progress'].append(pred_progress[i].item())
 
             if self.feedback == 'teacher':   
@@ -751,7 +738,7 @@ class NavCMTAgent:
             
             
         # For inference. Visualization is saved.
-        if not_in_train == True and self.feedback == 'student':
+        if self.args.inference == True and not 'test' in self.env_name :
             for i in range(len(obs)):
                 if 1: #obs[i]['map_name'].split('_')[0][-1] == '8': # just visualize some of the data
                     img = self.env.map_batch[obs[i]['map_name']].copy()

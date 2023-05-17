@@ -378,48 +378,15 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
         gt_net_lengths =  np.linalg.norm(gt_path[0] - gt_path[-1]) *11.13*1e4
 
 
-        scores['iou'] = progress[-1]
-
-        # Recording verification: Passed
-        # iou = compute_iou(corners[-1], gt_corners[-1]）
-        # if scores['iou'] - iou > 0.05:
-        #     print('!')
-
+        scores['iou'] = progress[-1] # same as compute_iou(corners[-1], gt_corners[-1]）
 
         scores['gp'] = gt_net_lengths - \
                       np.linalg.norm(path[-1] - gt_path[-2])*11.13*1e4
-        scores['3d_gp'] = scores['gp']*scores['iou']
         scores['oracle_gp'] = gt_net_lengths - \
                       np.min([np.linalg.norm(path[x] - gt_path[-1]) for x in range(len(path)) ])*11.13*1e4
 
         
-        scores['ATD'] = (path_fid(path,gt_path)*11.13*1e4 + 0.1) / (scores['oracle_gp'] +0.1)* scores['trajectory_lengths'] *100
 
-
-        # print(len(corners), len(gt_path))
-        # print("End corner: ",corners[-1])
-        
-        # print(gt_path[-1])
-  
-        # navigation: success is to arrive to a viewpoint in end_panos
-        # print(dist)
-        if len(path) > 1 and len(gt_path)>1:
-            scores['direction_diff_initial'] = min(
-                np.abs(get_direction(path[0], path[1]) - get_direction(gt_path[0], gt_path[1])),
-                360 - np.abs(get_direction(path[0], path[1]) - get_direction(gt_path[0], gt_path[1])))
-            scores['direction_diff'] = min(
-                np.abs(get_direction(path[0], path[-1]) - get_direction(gt_path[0], gt_path[-1])),
-                360 - np.abs(get_direction(path[0], path[-1]) - get_direction(gt_path[0], gt_path[-1])))
-        elif progress[0] >0.4: # at most should be 0.5
-            scores['direction_diff_initial'] = 0.
-            scores['direction_diff'] = 0.
-        else:
-            scores['direction_diff_initial'] = 180.
-            scores['direction_diff'] = 180.
-        
-        scores['less_30_rate_direction_diff_initial'] = float(scores['direction_diff_initial']<30)
-        scores['less_30_rate_direction_diff'] = float(scores['direction_diff']<15)
-                
         scores['success'] = float(progress[-1] >= 0.4)
         _center = np.mean(gt_corners[-1], axis=0) 
         _point = Point(_center)
@@ -437,13 +404,6 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
         scores['oracle_success'] = float(any(np.array(progress) > 0.4))
         scores['gt_length'] = gt_whole_lengths
         scores['spl'] = scores['success'] * gt_net_lengths / max(scores['trajectory_lengths'], gt_net_lengths, 0.01)
-
-        # gp_max = (np.linalg.norm( np.mean(obs[i]['gt_path_corners'][0], axis=0) - \
-        #                                                 np.mean(obs[i]['gt_path_corners'][-1], axis=0))*11.13*1e4\
-        #              + max( 400 - np.linalg.norm(obs[i]['gt_path_corners'][-1][0] - obs[i]['gt_path_corners'][-1][1])*11.13*1e4 ,\
-        #                     np.linalg.norm(obs[i]['gt_path_corners'][-1][0] - obs[i]['gt_path_corners'][-1][1])*11.13*1e4 - 40)    ) 
-
-
 
 
 
@@ -511,31 +471,22 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
                 metrics['success_long'].append(traj_scores['success'])  
                 metrics['spl_long'].append(traj_scores['spl'])
                 metrics['gp_long'].append(traj_scores['gp'])
-                metrics['ATD_long'].append(traj_scores['ATD'])
             else:
                 metrics['success_short'].append(traj_scores['success'])  
                 metrics['spl_short'].append(traj_scores['spl'])
                 metrics['gp_short'].append(traj_scores['gp'])
-                metrics['ATD_short'].append(traj_scores['ATD'])
             metrics['instr_id'].append(instr_id)
 
         avg_metrics = {
             # 'steps': np.mean(metrics['trajectory_steps']),
             'lengths': np.mean(metrics['trajectory_lengths']),
             'sr': np.mean(metrics['success']) * 100,
-            'direct_diff_initial': np.mean(metrics['direction_diff_initial']),
-            'direct_diff': np.mean(metrics['direction_diff']),
-            'less_30_rate_direction_diff_initial': np.mean(metrics['less_30_rate_direction_diff_initial']),
-            'less_30_rate_direction_diff': np.mean(metrics['less_30_rate_direction_diff']),
             'oracle_sr': np.mean(metrics['oracle_success']) * 100,
             'spl': np.mean(metrics['spl']) * 100,
             'gp': np.mean(metrics['gp']),
-            '3d_gp': np.mean(metrics['3d_gp']),
             'oracle_gp': np.mean(metrics['oracle_gp']),
             'gt_length': np.mean(metrics['gt_length']),
             'iou' : np.mean(metrics['iou']),
-            'ATD' : np.mean(metrics['ATD']),
-            # 'ATD_short' : np.mean(metrics['ATD_short']),
             # 'spl_short': np.mean(metrics['spl_short']) * 100,
             # 'sr_short': np.mean(metrics['success_short']) * 100,
             # 'gp_short': np.mean(metrics['gp_short']),
@@ -558,18 +509,6 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
             avg_metrics['sr_else']=np.mean(metrics['success_else']) * 100
             avg_metrics['gp_else']=np.mean(metrics['gp_else'])
         
-        # if len(metrics['ATD_long']) != 0:
-        #     avg_metrics['num_long']= len(metrics['ATD_long'])
-        #     avg_metrics['ATD_long']= np.mean(metrics['ATD_long'])
-        #     avg_metrics['spl_long']= np.mean(metrics['spl_long']) * 100
-        #     avg_metrics['sr_long']=np.mean(metrics['success_long']) * 100
-        #     avg_metrics['gp_long']=np.mean(metrics['gp_long'])
-        # if len(metrics['ATD_short']) != 0:
-        #     avg_metrics['num_short']= len(metrics['ATD_short'])
-        #     avg_metrics['ATD_short']= np.mean(metrics['ATD_short'])
-        #     avg_metrics['spl_short']= np.mean(metrics['spl_short']) * 100
-        #     avg_metrics['sr_short']=np.mean(metrics['success_short']) * 100
-        #     avg_metrics['gp_short']=np.mean(metrics['gp_short'])
         return avg_metrics, metrics
 
 

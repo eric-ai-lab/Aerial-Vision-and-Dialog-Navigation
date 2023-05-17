@@ -21,7 +21,7 @@ def parse_args():
     parser.add_argument('--log_every', type=int, default=1000)
     parser.add_argument('--eval_first', action='store_true', default=False)
         
-    parser.add_argument('--test', action='store_true', default=False)
+    parser.add_argument('--inference', action='store_true', default=False)
 
     # Data preparation
     parser.add_argument('--tokenizer', choices=['bert', 'xlm'], default='bert')

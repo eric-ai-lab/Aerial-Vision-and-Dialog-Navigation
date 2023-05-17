@@ -84,7 +84,7 @@ def train(args, train_env, train_full_traj_env, val_envs, val_full_traj_envs, au
         start_iter = agent.load(os.path.join(args.resume_file))
         if default_gpu:
             write_to_record_file(
-                "\nLOAD the model from {}, iteration ".format(args.resume_file, start_iter),
+                "\nLOAD the model from {}, iteration {}".format(args.resume_file, start_iter),
                 record_file
             )
        
@@ -185,30 +185,7 @@ def train(args, train_env, train_full_traj_env, val_envs, val_full_traj_envs, au
             (agent_eval.load(os.path.join(args.ckpt_dir, "latest_dict_" + str(iter))),
                 os.path.join(args.ckpt_dir, "latest_dict_" + str(iter)))\
             )
-        if args.train_val_on_full:
-            # evaluate in full traj mode
-            for env_name, env in val_full_traj_envs.items():
-                env_name += '_full_traj'
-                agent_eval.env = env
-
-                loader = torch.utils.data.DataLoader(env, batch_size = 1)
-                agent_eval.test(loader, feedback='student')
-                preds = agent_eval.get_results()
-
-
-                score_summary, _ = env.eval_metrics(preds)
-                loss_str += ", %s " % env_name
-                for metric, val in score_summary.items():
-                    loss_str += ', %s: %.2f' % (metric, val)
-                    writer.add_scalar('%s/%s' % (metric, env_name), score_summary[metric], iter)
-                if env_name in best_val:
-                    if score_summary['spl'] >= best_val[env_name]['spl']:
-                        best_val[env_name]['spl'] = score_summary['spl']
-                        best_val[env_name]['state'] = 'Iter %d %s' % (iter, loss_str)
-                        agent_eval.save(idx, os.path.join(args.ckpt_dir, "best_%s" % (env_name)))
-
-        else:
-            for env_name, env in val_envs.items():
+        for env_name, env in val_envs.items():
                 agent_eval.env = env
                 loader = torch.utils.data.DataLoader(env, batch_size = 1)
                 # Get validation distance from goal under test evaluation conditions
@@ -287,36 +264,15 @@ def valid(args, val_envs,  val_full_traj_envs, rank=-1):
     write_to_record_file(str(args) + '\n\n', record_file)
     loss_str = "iter {}".format(iter)
 
-    if args.train_val_on_full:
-        # evaluate in full traj mode
-        for env_name, env in val_full_traj_envs.items():
-            env_name += '_full_traj'
-            agent.env = env
-
-            loader = torch.utils.data.DataLoader(env, batch_size = 1)
-            agent.test(loader, feedback='student')
-            preds = agent.get_results()
-
-            score_summary, result = env.eval_metrics(preds)
-            loss_str += "Env name: %s" % env_name
-            for metric, val in score_summary.items():
-                loss_str += ', %s: %.2f' % (metric, val)
-            write_to_record_file(loss_str+'\n', record_file)
-            json.dump(
-                result,
-                open(os.path.join(args.pred_dir, "submit_%s.json" % env_name), 'w'),
-                sort_keys=True, indent=4, separators=(',', ': ')
-            )
-
-    else:
-        for env_name, env in val_envs.items():
+    for env_name, env in val_envs.items():
             agent.env = env
             loader = torch.utils.data.DataLoader(env, batch_size = 1)
             # Get validation distance from goal under test evaluation conditions
-            agent.test(loader, feedback='student')
+            agent.test(loader, feedback='student', env_name=env_name)
             pred_results = agent.get_results()
 
             if 'test_unseen' in env_name:
+                print('inference_result on test is generated.')
                 np.save('./output_test_result.npy', pred_results)
             else:
                 score_summary, result = env.eval_metrics(pred_results)
@@ -342,7 +298,7 @@ def main():
     set_random_seed(args.seed + rank)
     train_env, train_full_traj_env, val_envs, val_full_traj_envs = build_dataset(args, rank=rank)
 
-    if not args.test:
+    if not args.inference:
         train(args, train_env, train_full_traj_env, val_envs, val_full_traj_envs, rank=rank)
     else:
         valid(args, val_envs, val_full_traj_envs, rank=rank)
