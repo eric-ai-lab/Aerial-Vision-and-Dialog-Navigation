@@ -12,6 +12,9 @@ Todos:
 - [x] Eval.ai challenge setup
 - [ ] Dataset format explanation in detail
 
+# Leaderboard
+Based on the AVDN dataset, we host an ICCV 2023 Challenge (co-located at the ICCV 2023 CLVL workshop) for the Aerial Navigation from Dialog History (ANDH) task on Eval.ai: https://eval.ai/web/challenges/challenge-page/2049/overview
+
 # Download Data
 
 **Download xView data** 
@@ -102,6 +105,3 @@ bash scripts/avdn_paper/run_et_haa.sh
 # For Human Attention Aided LSTM model
 bash scripts/avdn_paper/run_lstm_haa.sh 
 ```
-
-# Leaderboard
-Bsed on AVDN dataset, we host a challenge based on Aerial Navigation from Dialog History (ANDH) task on Eval.ai: https://eval.ai/web/challenges/challenge-page/2049/overview
