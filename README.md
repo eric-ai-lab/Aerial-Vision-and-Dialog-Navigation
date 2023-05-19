@@ -10,7 +10,7 @@ Todos:
 - [x] Train code uploaded
 - [x] Inference code uploaded and checkpoint released
 - [x] Eval.ai challenge setup
-- [ ] Dataset format explanation in detail
+- [x] Dataset format explanation in detail
 
 # Leaderboard
 Based on the AVDN dataset, we host an ICCV 2023 Challenge (co-located at the ICCV 2023 CLVL workshop) for the Aerial Navigation from Dialog History (ANDH) task on Eval.ai: https://eval.ai/web/challenges/challenge-page/2049/overview
@@ -44,15 +44,7 @@ gdown 1MYVAPeeS7Ydw4P7j1glvmYoE5yrN8Eo8 -O Aerial-Vision-and-Dialog-Navigation/d
 
 gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations/test_unseen_data.json
 ```
-# Explore AVDN dataset
-<img align="right" height="226" src="readme_imgs/explore_avdn.png" />
-We provide a script for visualizing the trajectories and corresponding dialgues (as shown on the right). The script uses OpenCV. To run the script, plase download the xView data and AVDN dataset and provide to the script with the paths to the folder containing xView images and to AVDN dataset (either train, val_seen or val_unseen).
 
-```
-python Aerial-Vision-and-Dialog-Navigation/src/visualize_sub_traj_new.py \
---xview_image_path {PATH_TO_XVIEW_IMG_FOLDER} \
---avdn_annotation_path {PATH_TO_AVDN_DATASET}/val_seen_data.json
-```
 
 # Training and Evaluation
 **Download pre-trained xview-yolov3 weights**
