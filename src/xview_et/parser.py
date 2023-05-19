@@ -37,8 +37,8 @@ def parse_args():
     # xview
     parser.add_argument("--nss_w",type=float, default=1)
     parser.add_argument("--nss_r",type=int, default=0)
-    parser.add_argument('--darknet_model_file', type=str, default='/media/fy/extraData/Matterport3DSimulator/modified-HAMT/datasets/XVIEW/pretrain_weights/yolo_v3.cfg')
-    parser.add_argument('--darknet_weight_file', type=str, default='/media/fy/extraData/Matterport3DSimulator/modified-HAMT/datasets/XVIEW/pretrain_weights/best.pt')
+    parser.add_argument('--darknet_model_file', type=str, default='./datasets/AVDN/pretrain_weights/yolo_v3.cfg')
+    parser.add_argument('--darknet_weight_file', type=str, default='./AVDN/pretrain_weights/best.pt')
 
     # ET
     parser.add_argument('--demb', type=int, default=768)
@@ -114,12 +114,12 @@ def postprocess_args(args):
         'vitbase': 'pth_vit_base_patch16_224_imagenet.hdf5',
         'vitbase_r2rfte2e': 'pth_vit_base_patch16_224_imagenet_r2r.e2e.ft.22k.hdf5',
     }
-    args.train_dataset_dir = os.path.join(ROOTDIR, 'XVIEW', 'train_images')
-    args.val_dataset_dir = os.path.join(ROOTDIR, 'XVIEW', 'train_images')
+    args.train_dataset_dir = os.path.join(ROOTDIR, 'AVDN', 'train_images')
+    args.val_dataset_dir = os.path.join(ROOTDIR, 'AVDN', 'train_images')
 
 
-    args.train_anno_dir = os.path.join(ROOTDIR, 'XVIEW', 'annotations')
-    args.val_anno_dir = os.path.join(ROOTDIR, 'XVIEW', 'annotations')
+    args.train_anno_dir = os.path.join(ROOTDIR, 'AVDN', 'annotations')
+    args.val_anno_dir = os.path.join(ROOTDIR, 'AVDN', 'annotations')
 
     # Build paths
     args.ckpt_dir = os.path.join(args.output_dir, 'ckpts')

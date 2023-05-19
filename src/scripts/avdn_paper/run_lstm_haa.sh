@@ -26,18 +26,18 @@ flag="--root_dir ../datasets
       --nss_w 0
       --nss_r 0
 
-      --darknet_model_file ../datasets/XVIEW/pretrain_weights/yolo_v3.cfg
-      --darknet_weight_file ../datasets/XVIEW/pretrain_weights/best.pt
+      --darknet_model_file ../datasets/AVDN/pretrain_weights/yolo_v3.cfg
+      --darknet_weight_file ../datasets/AVDN/pretrain_weights/best.pt
       --eval_first True
       "
 
 
 
 # train
-# CUDA_VISIBLE_DEVICES='4' python xview_lstm/main.py --output_dir ../datasets/XVIEW/lstm_v8 $flag \
+# CUDA_VISIBLE_DEVICES='4' python xview_lstm/main.py --output_dir ../datasets/AVDN/lstm_v8 $flag \
 
 # eval
-CUDA_VISIBLE_DEVICES='4' python xview_lstm/main.py --output_dir ../datasets/XVIEW/lstm_output $flag \
---resume_file ../datasets/XVIEW/lstm_haa/ckpts/best_val_unseen \
+CUDA_VISIBLE_DEVICES='4' python xview_lstm/main.py --output_dir ../datasets/AVDN/lstm_output $flag \
+--resume_file ../datasets/AVDN/lstm_haa/ckpts/best_val_unseen \
 --inference True \
 --submit True

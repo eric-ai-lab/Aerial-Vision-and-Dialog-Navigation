@@ -1,5 +1,5 @@
-datasets/
-!datasets/XVIEW/pretrain_weights/yolo_v3.cfg
+datasets/AVDN
+!datasets/AVDN/pretrain_weights/yolo_v3.cfg
 debug_images/
 preprocess/
 pretrain_src/

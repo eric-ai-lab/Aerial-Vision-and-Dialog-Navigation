@@ -75,7 +75,7 @@ def compute_iou(a, b):
 def main():
     parser = argparse.ArgumentParser('AVDN_preview')
     parser.add_argument('--xview_image_path', default= '/homw/xview/')
-    parser.add_argument('--avdn_annotation_path', default= '/home/Aerial-Vision-and-Dialog-Navigation/datasets/XVIEW/annotations/val_seen_data.json')
+    parser.add_argument('--avdn_annotation_path', default= '/home/Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations/val_seen_data.json')
     args = parser.parse_args()
     
     
