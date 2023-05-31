@@ -12,8 +12,8 @@ Todos:
 - [x] Eval.ai challenge setup
 - [x] Dataset format explanation in detail
 
-# Leaderboard
-Based on the AVDN dataset, we host an ICCV 2023 Challenge (co-located at the ICCV 2023 CLVL workshop) for the Aerial Navigation from Dialog History (ANDH) task on Eval.ai: https://eval.ai/web/challenges/challenge-page/2049/overview
+# AVDN Challenge and Leaderboard
+Based on the AVDN dataset, we are hosting an ICCV 2023 Challenge (co-located at the ICCV 2023 CLVL workshop) for the Aerial Navigation from Dialog History (ANDH) task on Eval.ai: https://eval.ai/web/challenges/challenge-page/2049/overview
 
 # Download Data
 
