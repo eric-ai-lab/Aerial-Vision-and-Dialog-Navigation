@@ -47,10 +47,14 @@ gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/d
 
 
 # Training and Evaluation
-**Download pre-trained xview-yolov3 weights**
+**Download pre-trained xview-yolov3 weights and configuration file**
 
 ```
+mkdir -p Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/pretrain_weights
+
 gdown 1Ke-pA5jpq1-fsEwAch_iRCtJHx6rQc-Z -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/pretrain_weights/best.pt
+
+gdown 1n6RMWcHAbS6DA7BBug6n5dyN6NPjiPjh -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/pretrain_weights/yolo_v3.cfg
 
 ```
 
