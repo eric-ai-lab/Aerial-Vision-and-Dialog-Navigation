@@ -77,7 +77,7 @@ gdown 1RYjo_vc5m5ZRUcjIFojZjke8RhlfX90I -O Aerial-Vision-and-Dialog-Navigation/d
 ```
 pip install torch==1.11.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
 
-pip install torchvision==0.12.0+cu113 -f -f https://download.pytorch.org/whl/torch_stable.html
+pip install torchvision==0.12.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
 
 pip install -r requirements.txt
 ```
