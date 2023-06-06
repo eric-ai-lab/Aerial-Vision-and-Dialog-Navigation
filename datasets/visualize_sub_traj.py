@@ -115,14 +115,7 @@ def main():
                     return int(round((gps[1] - gps_botm_left[1]) / lat_ratio)), int(round((gps_top_right[0] - gps[0]) / lat_ratio))
 
             des = np.array(p_dic['destination'])
-            mean_des = np.mean(des, axis=0)
-            best_width = max(max(np.linalg.norm(des[0] - des[1]), np.linalg.norm(des[2] - des[1])), 40 / 11.13 / 1e4)
-
-            best_goal_view_area = np.array([[mean_des[0] - best_width / 2, mean_des[1] - best_width / 2],
-                                            [mean_des[0] - best_width / 2, mean_des[1] + best_width / 2],
-                                            [mean_des[0] + best_width / 2, mean_des[1] + best_width / 2],
-                                            [mean_des[0] + best_width / 2, mean_des[1] - best_width / 2]])
-            best_goal_view_area = [gps_to_img_coords(best_goal_view_area[j]) for j in range(4)]
+            destination_cord = [gps_to_img_coords(cord) for cord in des]
 
 
             for i in range(len(attention_list)):
@@ -272,7 +265,7 @@ def main():
                     [[int(i[0][0]), int(i[0][1])], [int(i[1][0]), int(i[1][1])], [int(i[2][0]), int(i[2][1])],
                     [int(i[3][0]), int(i[3][1])]])], 0, (255, 255, 255), 1)
 
-                cv2.drawContours(im_resized, [np.array(best_goal_view_area, dtype=np.int32)], 0, (0, 255, 0), 2)
+                cv2.drawContours(im_resized, [np.array(destination_cord, dtype=np.int32)], 0, (0, 255, 0), 2)
 
                 a = np.zeros((1000, im_resized.shape[1], 3), dtype=np.uint8)
                 t_p = 0
