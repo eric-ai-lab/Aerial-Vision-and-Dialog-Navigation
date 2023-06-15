@@ -87,9 +87,8 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
         batch_size=64, seed=0, full_traj = False):
         self.dataset_dir = dataset_dir
         self.data = []
-        ori_2_parse = json.load(open("/home/yue/AVDN_pasred_gpt35.json"))
         for split in splits:
-            new_data = json.load(open(os.path.join(anno_dir, '%s_dataset_parsed.json'%split)))
+            new_data = json.load(open(os.path.join(anno_dir, '%s_data.json'%split)))
             # # Debug!!!
             # new_data = new_data[:1]
             if full_traj == False:
@@ -100,28 +99,6 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
                     
                     for i in range(len(item['gt_path_corners'])):
                         item['gt_path_corners'][i] = np.array(item['gt_path_corners'][i]) 
-                        # item['instructions'] = item['instructions_parsed'].lower().replace('1. ', ' ')\
-                        # .replace('2. ', ' ')\
-                        # .replace('3. ', ' ')\
-                        # .replace('4. ', ' ')\
-                        # .replace('5. ', ' ')\
-                        # .replace('6. ', ' ')\
-                        # .replace('7. ', ' ')   
-                    if 'val' in split:
-                        parsed = ori_2_parse.get(item['instructions'].split('[INS]')[-1], item['instructions'].split('[INS]')[-1]).lower()\
-                            .replace('1.', ' ')\
-                            .replace('2. ', ' ')\
-                            .replace('3. ', ' ')\
-                            .replace('4. ', ' ')\
-                            .replace('5. ', ' ')\
-                            .replace('6. ', ' ')\
-                            .replace('7. ', ' ')\
-                            .replace('could you please', '').replace('please', '')\
-                            .replace('that is your destination', '').replace('that is our destination', '').replace('look for the destination', '')
-                              
-                        if np.random.random(1) >0.95:
-                            print(parsed)
-                        item['instructions'] = item['instructions'].replace(item['instructions'].split('[INS]')[-1], parsed)
                     item['instructions'] = item['instructions'].lower()
                     item['pre_dialogs'] = ' '.join(item['pre_dialogs']).lower()
                     self.data.append(item)
