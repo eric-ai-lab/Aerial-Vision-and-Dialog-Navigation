@@ -36,11 +36,11 @@ cp -r XVIEW_images/*.tif Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/train
 ```
 mkdir -p Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations
 
-gdown 1bdX5E1uEQXg8T8b5T7sh6WXb4V5rcG_Q -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations/train_data.json
+gdown 1xUHnrYaNGe_IBG7W1ecaf6U2cyuBfYLr -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations/train_data.json
 
-gdown 1y0PAW3bN1KtWPx9SkKuJU7o0c0tJsnzY -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations/val_seen_data.json
+gdown 1mtT3AVJQNEbjKkH6aINX3kj7ROADkBET -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations/val_seen_data.json
 
-gdown 1MYVAPeeS7Ydw4P7j1glvmYoE5yrN8Eo8 -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations/val_unseen_data.json
+gdown 17fVSHmuB3EFHkfNRZle6kgVcvZcumsJr -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations/val_unseen_data.json
 
 gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/datasets/AVDN/annotations/test_unseen_data.json
 ```
