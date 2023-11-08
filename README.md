@@ -12,10 +12,10 @@ Todos:
 - [x] Eval.ai challenge setup
 - [x] Dataset format explanation in detail
 
-# AVDN Challenge and Leaderboard
+## AVDN Challenge and Leaderboard
 Based on the AVDN dataset, we are hosting an ICCV 2023 Challenge (co-located at the ICCV 2023 CLVL workshop) for the Aerial Navigation from Dialog History (ANDH) task on Eval.ai: https://eval.ai/web/challenges/challenge-page/2049/overview
 
-# Download Data
+## Download Data
 
 **Download xView data** 
 
@@ -46,7 +46,7 @@ gdown 14BijI07ukKCSDh3T_RmUG83z6Oa75M-U -O Aerial-Vision-and-Dialog-Navigation/d
 ```
 
 
-# Training and Evaluation
+## Training and Evaluation
 **Download pre-trained xview-yolov3 weights and configuration file**
 
 ```
@@ -100,4 +100,26 @@ bash scripts/avdn_paper/run_et_haa.sh
 
 # For Human Attention Aided LSTM model
 bash scripts/avdn_paper/run_lstm_haa.sh 
+```
+
+## If you find this useful, please cite
+
+```
+@inproceedings{fan-etal-2023-aerial,
+    title = "Aerial Vision-and-Dialog Navigation",
+    author = "Fan, Yue  and
+      Chen, Winson  and
+      Jiang, Tongzhou  and
+      Zhou, Chun  and
+      Zhang, Yi  and
+      Wang, Xin Eric",
+    booktitle = "Findings of the Association for Computational Linguistics: ACL 2023",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-acl.190",
+    doi = "10.18653/v1/2023.findings-acl.190",
+    pages = "3043--3061",
+}
 ```
