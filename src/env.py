@@ -334,44 +334,7 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
     ############### Nav Evaluation ###############
     def _eval_item(self, gt_path, gt_corners, path, corners, progress):
         
-        def get_direction(start,end):
-            vec=np.array(end) - np.array(start)
-            _angle = 0
-            #          90
-            #      135    45
-            #     180  .    0
-            #      225   -45 
-            #          270
-            if vec[1] > 0: # lng is postive
-                _angle = np.arctan(vec[0]/vec[1]) / 1.57*90
-            elif vec[1] < 0:
-                _angle = np.arctan(vec[0]/vec[1]) / 1.57*90 + 180
-            else:
-                if np.sign(vec[0]) == 1:
-                    _angle = 90
-                else:
-                    _angle = 270
-            _angle = (360 - _angle+90)%360
-            return _angle
-
-        def path_fid(exec_path, gt_path):
-            div_sum = 0
-            for i in range(len(exec_path)):
-                poly = LineString(gt_path)
-                point = Point(exec_path[i])
-                p1, p2 = nearest_points(poly, point)
-                div_sum += np.linalg.norm(np.array(p1.coords) - exec_path[i])
-            return div_sum/len(exec_path)
-        
         scores = {}
-
-        # start_pano = path[0]
-        # end_panos = set(end_panos)
-        # shortest_distances = self.shortest_distances[scan]
-
-        # scores['trajectory_steps'] = len(path) - 1
-        
-
         scores['trajectory_lengths'] = np.sum([np.linalg.norm(a-b) for a, b in zip(path[:-1], path[1:])])
         scores['trajectory_lengths'] = scores['trajectory_lengths']*11.13*1e4
         gt_whole_lengths =  np.sum([np.linalg.norm(a-b) for a, b in zip(gt_path[:-1], gt_path[1:])])*11.13*1e4

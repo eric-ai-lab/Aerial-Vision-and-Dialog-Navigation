@@ -12,20 +12,22 @@ import shapely
 import shapely.geometry
 from shapely.geometry import Polygon, MultiPoint
 
-def get_direction(start, end):
+def get_direction_for_img_coord(start, end): # should only used for img coord
     vec = np.array(end) - np.array(start)
+    vec[1] = -vec[1]
+
     _angle = 0
     #          90
     #      135    45
     #     180  .    0
     #      225   -45
     #          270
-    if vec[1] > 0:  # lng is postive
-        _angle = np.arctan(vec[0] / vec[1]) / 1.57 * 90
-    elif vec[1] < 0:
-        _angle = np.arctan(vec[0] / vec[1]) / 1.57 * 90 + 180
+    if vec[0] > 0:  # lat is postive
+        _angle = np.arctan(vec[1] / vec[0]) / 1.57 * 90
+    elif vec[0] < 0:
+        _angle = np.arctan(vec[1] / vec[0]) / 1.57 * 90 + 180
     else:
-        if np.sign(vec[0]) == 1:
+        if np.sign(vec[1]) == 1:
             _angle = 90
         else:
             _angle = 270
@@ -210,7 +212,7 @@ def main():
 
 
                 angle = round(
-                    get_direction(center_coord, (np.array(pos_list[-1][0]) + np.array(pos_list[-1][1])) / 2)) % 360
+                    get_direction_for_img_coord(center_coord, (np.array(pos_list[-1][0]) + np.array(pos_list[-1][1])) / 2)) % 360
 
                 cv2.line(im_resized,
                         (

@@ -22,3 +22,4 @@ src/models/__pycache__/*
 src/xview_et/__pycache__/*
 src/xview_lstm/__pycache__/*
 src/*.npy
+*/log
