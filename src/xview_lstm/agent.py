@@ -631,8 +631,6 @@ class NavCMTAgent:
                 
                 # Compute loss
                 for i in range(len(obs)):
-                    # if the function teacher_action determins that the current view is the final position, no action should be made
-                    if type(target[i][0]) != type(-100):
                         cuda_gt_next_pos_ratio = torch.from_numpy(target[i][0]).cuda()
                         ml_loss += self.progress_regression(pred_next_pos_ratio[i,:], cuda_gt_next_pos_ratio)
                         ml_loss += self.progress_regression((torch.atan2(pred_next_pos_ratio[i,0], pred_next_pos_ratio[i,1])  /3.14159 + 2) / 2  %1 ,
