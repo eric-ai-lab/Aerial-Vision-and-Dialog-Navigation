@@ -344,7 +344,7 @@ class ANDHNavBatch(torch.utils.data.IterableDataset):
         scores['iou'] = progress[-1] # same as compute_iou(corners[-1], gt_corners[-1]）
 
         scores['gp'] = gt_net_lengths - \
-                      np.linalg.norm(path[-1] - gt_path[-2])*11.13*1e4
+                      np.linalg.norm(path[-1] - gt_path[-1])*11.13*1e4
         scores['oracle_gp'] = gt_net_lengths - \
                       np.min([np.linalg.norm(path[x] - gt_path[-1]) for x in range(len(path)) ])*11.13*1e4
 
